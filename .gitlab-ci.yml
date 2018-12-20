@@ -11,4 +11,5 @@ front:install:
   - npm run build:lib
   - cp -r src/assets dist/ngx-frogger/assets
   - cd dist/ngx-frogger
+  - npm config set registry http://repository.alyotech.fr/artifactory/api/npm/npm
   - npm publish
