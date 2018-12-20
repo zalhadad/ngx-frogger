@@ -4,13 +4,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "frogger",
+      "ngx-frogger",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "frogger",
+      "ngx-frogger",
       "kebab-case"
     ]
   }
