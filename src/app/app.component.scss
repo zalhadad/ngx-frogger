@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  .side {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-direction: column;
+
+    button {
+      font-size: 3rem;
+    }
+  }
+}

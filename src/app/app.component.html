@@ -4,6 +4,12 @@
     Test frogger game
   </h1>
 </div>
-
-<ngx-frogger></ngx-frogger>
-
+<div class="container">
+  <ngx-frogger #frogger (gameOver)="display($event)"></ngx-frogger>
+  <div class="side">
+    <button (click)="frogger.reset()">Reset</button>
+    <pre>
+      {{result | json }}
+    </pre>
+  </div>
+</div>
