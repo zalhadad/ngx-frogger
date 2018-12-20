@@ -1,0 +1,14 @@
+stages:
+- prepare
+
+front:install:
+  stage: prepare
+  image: node
+  tags:
+  - Interne
+  script:
+  - npm intall
+  - npm run build:lib
+  - cp src/assets dist/ngx-frogger/assets
+  - cd dist/ngx-frogger
+  - npm publish
