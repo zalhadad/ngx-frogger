@@ -7,7 +7,7 @@ front:install:
   tags:
   - Interne
   script:
-  - npm intall
+  - npm install
   - npm run build:lib
   - cp src/assets dist/ngx-frogger/assets
   - cd dist/ngx-frogger
