@@ -9,6 +9,6 @@ front:install:
   script:
   - npm install
   - npm run build:lib
-  - cp src/assets dist/ngx-frogger/assets
+  - cp -r src/assets dist/ngx-frogger/assets
   - cd dist/ngx-frogger
   - npm publish
