@@ -7,7 +7,7 @@ front:install:
   tags:
   - Interne
   script:
-  - npm intall
+  - npm install
   - npm run build:lib
   - npm run copy-lib-assets
   - npm run publish:lib
