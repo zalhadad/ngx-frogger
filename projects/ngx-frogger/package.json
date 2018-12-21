@@ -2,7 +2,15 @@
   "name": "ngx-frogger",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^7.1.0",
-    "@angular/core": "^7.1.0"
+    "@angular/common": "^7.0.1",
+    "@angular/core": "^7.0.1"
+  },
+  "dependencies": {
+    "p5": "^0.7.2",
+    "moment": "^2.23.0",
+    "moment-duration-format": "^2.2.2"
+  },
+  "publishConfig": {
+    "registry": "http://repository.alyotech.fr/artifactory/api/npm/npm"
   }
 }
