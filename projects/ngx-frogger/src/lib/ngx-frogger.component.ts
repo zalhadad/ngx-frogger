@@ -180,16 +180,16 @@ export class NgxFroggerComponent implements OnInit {
         switch (s.keyCode) {
           case s.LEFT_ARROW:
             this.currentFrog.left = false;
-            break;
+            return false;
           case s.RIGHT_ARROW:
             this.currentFrog.right = false;
-            break;
+            return false;
           case s.UP_ARROW:
             this.currentFrog.up = false;
-            break;
+            return false;
           case s.DOWN_ARROW:
             this.currentFrog.down = false;
-            break;
+            return false;
         }
         return true;
       };
@@ -205,6 +205,7 @@ export class NgxFroggerComponent implements OnInit {
     this.times = [];
     this.score = 0;
     this.init(this.p5);
+    this.p5.loop();
   }
 
   private gameEnd(s) {

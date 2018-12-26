@@ -11,6 +11,6 @@
     "moment-duration-format": "^2.2.2"
   },
   "publishConfig": {
-    "registry": "http://repository.alyotech.fr/artifactory/api/npm/npm"
+    "registry": "http://repository.alyotech.fr/artifactory/api/npm/npm-local"
   }
 }
