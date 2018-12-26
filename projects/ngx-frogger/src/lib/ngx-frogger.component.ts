@@ -50,6 +50,7 @@ export class NgxFroggerComponent implements OnInit {
   private res: number;
   private cols: number;
   private rows: Row[];
+  private gameStopped: boolean;
 
   constructor() {
     this.gameOver = new EventEmitter<{
@@ -87,6 +88,10 @@ export class NgxFroggerComponent implements OnInit {
       };
 
       s.draw = () => {
+        if (this.gameStopped) {
+          return false;
+        }
+
         s.clear();
         this.currentFrog.currentFrame = (this.currentFrog.currentFrame + 1) % 60;
 
@@ -206,6 +211,7 @@ export class NgxFroggerComponent implements OnInit {
     this.score = 0;
     this.init(this.p5);
     this.p5.loop();
+    this.gameStopped = false;
   }
 
   private gameEnd(s) {
@@ -215,6 +221,9 @@ export class NgxFroggerComponent implements OnInit {
     s.text('GAME OVER', s.width / 2, s.height / 2);
     s.noLoop();
 
+    this.gameStopped = true;
+
+    console.log('gameEnd');
     this.gameOver.emit({
       totalTime: this.gameTimer,
       score: this.score,

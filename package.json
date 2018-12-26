@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 1234",
     "build": "ng build",
     "build:lib": "ng build ngx-frogger",
     "copy-lib-assets": "cpx \"src/assets/**\" \"dist/ngx-frogger/assets\" -v",
