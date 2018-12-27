@@ -1,9 +1,20 @@
 {
   "name": "ngx-frogger",
   "version": "0.0.1",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Aurélien ANNE",
+      "email": "aurelien.anne@scalian.com"
+    },
+    {
+      "name": "Zaid ALHADAD",
+      "email": "zaid.alhadad@scalian.com"
+    }
+  ],
   "peerDependencies": {
-    "@angular/common": "^7.0.1",
-    "@angular/core": "^7.0.1"
+    "@angular/common": ">7.0.1",
+    "@angular/core": ">7.0.1"
   },
   "dependencies": {
     "p5": "^0.7.2",

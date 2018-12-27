@@ -5,9 +5,9 @@
     "ng": "ng",
     "start": "ng serve --port 1234",
     "build": "ng build",
-    "build:lib": "ng build ngx-frogger",
+    "build:lib": "ng build ngx-frogger && npm run copy-lib-assets",
     "copy-lib-assets": "cpx \"src/assets/**\" \"dist/ngx-frogger/assets\" -v",
-    "publish:lib": "npm publish dist/ngx-frogger",
+    "publish:lib": "npm publish dist/ngx-frogger ",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

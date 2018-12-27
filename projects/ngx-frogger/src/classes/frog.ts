@@ -11,21 +11,25 @@ export class Frog {
   up;
   down;
   private img: any;
+  private imgFixed: any;
   private p5: any;
+  private canvas: any;
+  private removed: boolean;
 
-  currentFrame;
-
-  constructor(p5, x, y, taille) {
+  constructor(p5, x, y, taille, canvas) {
     this.p5 = p5;
     this.sittingOn = null;
     this.rect = new Rectangle(x, y, taille, taille);
-    // this.img = this.p5.loadImage('assets/sprites/frog.png');
-    this.img = this.p5.loadImage('assets/sprites/human.gif');
+    this.imgFixed = this.p5.loadImage('assets/sprites/frog.gif');
+    this.img = this.p5.createImg('assets/sprites/frog.gif');
+    this.img.size(taille, taille);
+    this.img.style('transition: transform 0.1s ease-in-out');
+    this.img.style('z-index: 1000');
     this.angle = 0;
     this.arrived = false;
-    this.currentFrame = -1;
+    this.canvas = canvas;
+    this.removed = false;
   }
-
 
   update() {
     this.rect.y = Math.round(this.rect.y);
@@ -33,26 +37,11 @@ export class Frog {
       this.rect.x += this.sittingOn.speed / this.rect.w;
     }
 
-
-    if (this.currentFrame % 15 === 0) {
-
-      if (this.left) {
-        this.rect.move(-1, 0);
-      }
-      if (this.right) {
-        this.rect.move(1, 0);
-      }
-      if (this.up) {
-        this.rect.move(0, -1);
-      }
-      if (this.down) {
-        this.rect.move(0, 1);
-      }
-    }
-
     this.rect.x = this.p5.constrain(this.rect.x, 0, (this.p5.width - this.rect.w) / this.rect.w);
     this.rect.y = this.p5.constrain(this.rect.y, 1, (this.p5.height - this.rect.h) / this.rect.h);
     this.sittingOn = null;
+
+    this.img.position(this.rect.x * this.rect.w + this.canvas.position().x, this.rect.y * this.rect.h + this.canvas.position().y);
   }
 
   move(x, y, arrivee: Arrivee) {
@@ -70,6 +59,7 @@ export class Frog {
     } else {
       this.rect.move(x, y);
     }
+
     if (x === -1) {
       this.angle = 270;
     }
@@ -82,20 +72,34 @@ export class Frog {
     if (y === 1) {
       this.angle = 180;
     }
+
+    this.img.style('rotate', this.angle);
+
   }
 
   show() {
-    this.p5.push();
-    this.p5.translate(this.rect.x * this.rect.w + this.rect.w / 2, this.rect.y * this.rect.h + this.rect.h / 2);
-    this.p5.angleMode(this.p5.DEGREES);
-    this.p5.rotate(this.angle);
-    this.p5.imageMode(this.p5.CENTER);
-    this.p5.image(this.img, 0, 0, this.rect.w, this.rect.h);
-    this.p5.imageMode(this.p5.CORNER);
-    this.p5.pop();
+    if (this.p5.keyIsPressed && !this.arrived && !this.removed) {
+      this.img.show();
+    } else {
+      this.img.hide();
+      this.p5.push();
+      this.p5.translate(this.rect.x * this.rect.w + this.rect.w / 2, this.rect.y * this.rect.h + this.rect.h / 2);
+      this.p5.angleMode(this.p5.DEGREES);
+      this.p5.rotate(this.angle);
+      this.p5.imageMode(this.p5.CENTER);
+      this.p5.image(this.imgFixed, 0, 0, this.rect.w, this.rect.h);
+      this.p5.imageMode(this.p5.CORNER);
+      this.p5.pop();
+    }
   }
 
   intersects(obstacle) {
     return this.rect.intersects(obstacle.rect);
+  }
+
+  remove() {
+    this.img.remove();
+    this.removed = true;
+    this.show();
   }
 }

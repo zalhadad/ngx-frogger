@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import 'p5';
 import * as p5 from 'p5';
 import 'p5/lib/addons/p5.sound';
@@ -18,7 +18,7 @@ const moment = moment_;
     <div id='canvas-holder'></div>`,
   styles: []
 })
-export class NgxFroggerComponent implements OnInit {
+export class NgxFroggerComponent implements OnInit, OnDestroy {
 
   @Output() gameOver: EventEmitter<{
     totalTime: number,
@@ -51,6 +51,7 @@ export class NgxFroggerComponent implements OnInit {
   private cols: number;
   private rows: Row[];
   private gameStopped: boolean;
+  private currentFrame: number;
 
   constructor() {
     this.gameOver = new EventEmitter<{
@@ -93,7 +94,7 @@ export class NgxFroggerComponent implements OnInit {
         }
 
         s.clear();
-        this.currentFrog.currentFrame = (this.currentFrog.currentFrame + 1) % 60;
+        this.currentFrame = (this.currentFrame + 1) % 60;
 
         for (let i = 0; i < this.cols; i += 1) {
           for (let j = 2; j < this.cols - 1; j += 1) {
@@ -123,10 +124,25 @@ export class NgxFroggerComponent implements OnInit {
         if (this.currentFrog.arrived) {
           this.score += 50;
           this.yReached = this.cols - 1;
-          this.currentFrog = new Frog(s, Math.floor(this.cols / 2), this.cols - 1, this.res);
+          this.currentFrog = new Frog(s, Math.floor(this.cols / 2), this.cols - 1, this.res, this.canvas);
           this.frogs.push(this.currentFrog);
         }
 
+        if (this.currentFrame % 15 === 0) {
+
+          if (this.currentFrog.left) {
+            this.currentFrog.move(-1, 0, this.arrivee);
+          }
+          if (this.currentFrog.right) {
+            this.currentFrog.move(1, 0, this.arrivee);
+          }
+          if (this.currentFrog.up) {
+            this.currentFrog.move(0, -1, this.arrivee);
+          }
+          if (this.currentFrog.down) {
+            this.currentFrog.move(0, 1, this.arrivee);
+          }
+        }
         this.currentFrog.update();
         this.frogs.forEach(f => f.show());
 
@@ -177,7 +193,7 @@ export class NgxFroggerComponent implements OnInit {
             this.currentFrog.down = true;
             break;
         }
-        this.currentFrog.currentFrame = 1;
+        this.currentFrame = 1;
         return true;
       };
 
@@ -204,6 +220,10 @@ export class NgxFroggerComponent implements OnInit {
     const resultat = new p5(sketch);
   }
 
+  ngOnDestroy() {
+    this.p5.remove();
+  }
+
   reset() {
     this.gameStart = moment();
     this.level = 0;
@@ -221,9 +241,12 @@ export class NgxFroggerComponent implements OnInit {
     s.text('GAME OVER', s.width / 2, s.height / 2);
     s.noLoop();
 
+    if (this.frogs && this.frogs.length) {
+      this.frogs.forEach(f => f.remove());
+    }
+
     this.gameStopped = true;
 
-    console.log('gameEnd');
     this.gameOver.emit({
       totalTime: this.gameTimer,
       score: this.score,
@@ -237,6 +260,9 @@ export class NgxFroggerComponent implements OnInit {
     this.yReached = this.cols - 1;
 
     this.rows = [];
+    if (this.frogs && this.frogs.length) {
+      this.frogs.forEach(f => f.remove());
+    }
     this.frogs = [];
 
     this.level += 1;
@@ -244,11 +270,11 @@ export class NgxFroggerComponent implements OnInit {
 
     for (let i = 2; i < this.cols - 1; i += 1) {
       if (i !== Math.floor(this.cols / 2)) {
-        this.rows.push(new Row(s, i, this.res, s.random(this.level - 1, this.level + 2), this.cols));
+        this.rows.push(new Row(s, i, this.res, s.random(this.level, this.level + 2), this.cols));
       }
     }
-    this.currentFrog = new Frog(s, Math.floor(this.cols / 2), Math.round(this.cols - 1), this.res);
-    this.currentFrog.currentFrame = 1;
+    this.currentFrog = new Frog(s, Math.floor(this.cols / 2), Math.round(this.cols - 1), this.res, this.canvas);
+    this.currentFrame = 1;
     this.frogs.push(this.currentFrog);
   }
 }
