@@ -1,9 +1,10 @@
 language: node_js
 node_js:
   - "8"
+
+before_deploy : "echo skipping tests"
+
 deploy:
-  script:
-  - echo "skipping tests"
   provider: npm
   email: "zaid172009@gmail.com"
   api_key: token
