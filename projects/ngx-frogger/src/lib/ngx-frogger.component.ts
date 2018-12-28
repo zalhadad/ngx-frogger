@@ -9,6 +9,7 @@ import {Frog} from '../classes/frog';
 import {Row} from '../classes/row';
 import * as moment_ from 'moment';
 import 'moment-duration-format';
+import {Life} from '../classes/life';
 
 const moment = moment_;
 
@@ -45,6 +46,7 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
   private depart: SafeZone;
   private checkpoint: SafeZone;
   private arrivee: Arrivee;
+  private lifes: Life;
   private frogs: Frog[];
   private currentFrog: Frog;
   private res: number;
@@ -52,6 +54,7 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
   private rows: Row[];
   private gameStopped: boolean;
   private currentFrame: number;
+  private textPosition;
 
   constructor() {
     this.gameOver = new EventEmitter<{
@@ -78,11 +81,13 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
         this.canvas = s.createCanvas(800, 800);
         this.canvas.parent('canvas-holder');
         this.cols = 15;
+        this.textPosition = this.canvas.width / 5;
 
         this.res = this.canvas.width / this.cols;
         this.depart = new SafeZone(s, this.res, this.cols - 1);
         this.checkpoint = new SafeZone(s, this.res, Math.floor(this.cols / 2));
         this.arrivee = new Arrivee(s, this.res);
+        this.lifes = new Life(s, 0, this.res * 1.5, this.res);
 
         this.reset();
 
@@ -104,22 +109,9 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
         this.depart.show();
         this.checkpoint.show();
         this.arrivee.show();
+        this.lifes.show();
 
         this.rows.forEach(r => r.update());
-
-        this.timer = moment.duration(moment().diff(this.start));
-        this.gameTimer = moment.duration(moment().diff(this.gameStart));
-        s.textAlign(s.LEFT, s.CENTER);
-        s.textSize(15);
-        s.fill(255);
-        const gameTimeDisplay = 'Total : ' + (this.gameTimer.format().includes('milliseconds') ? '0:00' : this.gameTimer.format()) + ' min';
-        s.text(gameTimeDisplay, 20, 20);
-        const timeDisplay = 'Niveau Actuel : ' + (this.timer.format().includes('milliseconds') ? '0:00' : this.timer.format()) + ' min';
-        s.text(timeDisplay, 20, 40);
-        if (Math.round(this.currentFrog.rect.y) < this.yReached) {
-          this.yReached = this.currentFrog.rect.y;
-          this.score += 10;
-        }
 
         if (this.currentFrog.arrived) {
           this.score += 50;
@@ -149,21 +141,35 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
         if (this.arrivee.goToNextLevel()) {
           this.times.push({level: this.level, time: this.timer});
           this.score += 100;
-          this.init(s);
+          this.lifes.addLife();
+          this.init();
         }
 
+        this.timer = moment.duration(moment().diff(this.start));
+        this.gameTimer = moment.duration(moment().diff(this.gameStart));
+
+        if (Math.round(this.currentFrog.rect.y) < this.yReached) {
+          this.yReached = this.currentFrog.rect.y;
+          this.score += 10;
+        }
+
+        const gameTimeDisplay = 'Total : ' + (this.gameTimer.format().includes('milliseconds') ? '0:00' : this.gameTimer.format()) + ' min';
+        const timeDisplay = 'Niveau Actuel : ' + (this.timer.format().includes('milliseconds') ? '0:00' : this.timer.format()) + ' min';
         const scoreDisplay = 'Score : ' + this.score;
-        s.textAlign(s.LEFT, s.CENTER);
-        s.text(scoreDisplay, s.width - 150, 20);
         const levelDisplay = 'Level ' + this.level;
-        s.text(levelDisplay, s.width - 150, 40);
+
+        s.fill(255);
+        s.text(gameTimeDisplay, this.textPosition, 20);
+        s.text(timeDisplay, this.textPosition * 2, 20);
+        s.text(scoreDisplay, this.textPosition * 3, 20);
+        s.text(levelDisplay, this.textPosition * 4, 20);
 
 
         this.rows.forEach(r => {
           const obstacle = r.hits(this.currentFrog);
           if (obstacle) {
             if (obstacle.type === 'car') {
-              this.gameEnd(s);
+              this.nextLife();
             } else {
               this.currentFrog.sittingOn = obstacle;
             }
@@ -171,7 +177,7 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
         });
 
         if (this.currentFrog.rect.y < Math.floor(this.cols / 2) && !this.currentFrog.sittingOn) {
-          this.gameEnd(s);
+          this.nextLife();
         }
       };
       s.keyPressed = () => {
@@ -229,17 +235,34 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
     this.level = 0;
     this.times = [];
     this.score = 0;
-    this.init(this.p5);
+    this.lifes.reset();
+    this.init();
     this.p5.loop();
+    this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
+    this.p5.textSize(15);
     this.gameStopped = false;
   }
 
-  private gameEnd(s) {
-    s.background(100, 0, 0, 100);
-    s.textAlign(s.CENTER, s.CENTER);
-    s.textSize(100);
-    s.text('GAME OVER', s.width / 2, s.height / 2);
-    s.noLoop();
+  private nextLife() {
+    this.lifes.removeLife();
+
+    if (this.lifes.getLifes() < 0) {
+      this.gameEnd();
+    } else {
+      const y = this.yReached < Math.floor(this.cols / 2) ? Math.floor(this.cols / 2) : Math.round(this.cols - 1);
+      this.currentFrog = new Frog(this.p5, Math.floor(this.cols / 2), y, this.res, this.canvas);
+      this.currentFrame = 1;
+      const old = this.frogs.pop();
+      old.remove();
+      this.frogs.push(this.currentFrog);
+    }
+  }
+
+  private gameEnd() {
+    this.p5.background(100, 0, 0, 100);
+    this.p5.textSize(100);
+    this.p5.text('GAME OVER', this.p5.width / 2, this.p5.height / 2);
+    this.p5.noLoop();
 
     if (this.frogs && this.frogs.length) {
       this.frogs.forEach(f => f.remove());
@@ -254,7 +277,7 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
     });
   }
 
-  private init(s) {
+  private init() {
 
     this.start = moment();
     this.yReached = this.cols - 1;
@@ -270,10 +293,10 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
 
     for (let i = 2; i < this.cols - 1; i += 1) {
       if (i !== Math.floor(this.cols / 2)) {
-        this.rows.push(new Row(s, i, this.res, s.random(this.level, this.level + 2), this.cols));
+        this.rows.push(new Row(this.p5, i, this.res, this.p5.random(1, this.level + 1), this.cols));
       }
     }
-    this.currentFrog = new Frog(s, Math.floor(this.cols / 2), Math.round(this.cols - 1), this.res, this.canvas);
+    this.currentFrog = new Frog(this.p5, Math.floor(this.cols / 2), Math.round(this.cols - 1), this.res, this.canvas);
     this.currentFrame = 1;
     this.frogs.push(this.currentFrog);
   }

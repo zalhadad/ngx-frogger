@@ -13,7 +13,7 @@ export class Arrivee {
   constructor(p5, size) {
     this.p5 = p5;
     this.size = size;
-    this.img = this.p5.loadImage('assets/sprites/grass.png');
+    this.img = this.p5.loadImage('assets/sprites/wall.jpg');
     this.holeImg = this.p5.loadImage('assets/sprites/lilypad.jpg');
     this.cols = Math.round(this.p5.width / this.size);
     this.mark = 0;

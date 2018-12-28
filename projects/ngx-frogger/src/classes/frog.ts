@@ -15,6 +15,7 @@ export class Frog {
   private p5: any;
   private canvas: any;
   private removed: boolean;
+  private keycodes;
 
   constructor(p5, x, y, taille, canvas) {
     this.p5 = p5;
@@ -29,6 +30,12 @@ export class Frog {
     this.arrived = false;
     this.canvas = canvas;
     this.removed = false;
+    this.keycodes = [
+      this.p5.LEFT_ARROW,
+      this.p5.RIGHT_ARROW,
+      this.p5.UP_ARROW,
+      this.p5.DOWN_ARROW
+    ];
   }
 
   update() {
@@ -46,13 +53,14 @@ export class Frog {
 
   move(x, y, arrivee: Arrivee) {
     if (y) {
-      this.rect.x = Math.round(this.rect.x);
       this.rect.y = Math.round(this.rect.y);
     }
 
     if (this.rect.y === 2 && y === -1) {
-      if (arrivee.canEnter(this.rect.x)) {
-        arrivee.enterArrivee(this.rect.x);
+      const xInt = Math.round(this.rect.x);
+      if (arrivee.canEnter(xInt)) {
+        arrivee.enterArrivee(xInt);
+        this.rect.x = xInt;
         this.rect.move(x, y);
         this.arrived = true;
       }
@@ -78,7 +86,7 @@ export class Frog {
   }
 
   show() {
-    if (this.p5.keyIsPressed && !this.arrived && !this.removed) {
+    if (this.p5.keyIsPressed && this.keycodes.includes(this.p5.keyCode) && !this.arrived && !this.removed) {
       this.img.show();
     } else {
       this.img.hide();

@@ -11,7 +11,7 @@ export class Rectangle {
     this.w = w;
     this.h = h;
 
-    this.delta = 0.5;
+    this.delta = 0.7;
   }
 
   intersects(other) {

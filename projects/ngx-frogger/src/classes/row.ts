@@ -28,7 +28,11 @@ export class Row {
 
     while (reste > 0) {
       size = this.p5.int(this.p5.random(min, 5));
-      offset = this.p5.int(this.p5.random(5, this.cols / 2));
+      if (this.type === 'boat') {
+        offset = this.p5.int(this.p5.random(1, 6));
+      } else {
+        offset = this.p5.int(this.p5.random(5, this.cols / 2));
+      }
       place += offset;
 
       this.obstacles.push(new Obstacle(this.p5, place, y, size, this.res, this.inverted * this.speed, this.type));
