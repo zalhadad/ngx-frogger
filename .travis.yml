@@ -1,0 +1,4 @@
+deploy:
+  provider: npm
+  email: "zaid172009@gmail.com"
+  api_key: token
