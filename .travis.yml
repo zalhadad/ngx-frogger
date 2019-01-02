@@ -1,11 +1,12 @@
 language: node_js
 node_js:
 - stable
-before_deploy :
+before_deploy:
   - npm run build:lib
   - npm run copy-lib-assets
   - cd dist/ngx-frogger
 deploy:
+  skip_cleanup: true
   provider: npm
   email: zaid172009@gmail.com
   api_key:
