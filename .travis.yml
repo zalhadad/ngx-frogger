@@ -3,7 +3,6 @@ node_js:
 - '8'
 after_success:
   - npm run build:lib
-  - npm run copy-lib-assets
   - cp .travis.yml dist/ngx-frogger/
 before_deploy:
   - cd dist/ngx-frogger
