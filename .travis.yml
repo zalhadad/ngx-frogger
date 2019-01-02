@@ -1,14 +1,12 @@
 language: node_js
 node_js:
-  - "8"
-
-before_deploy :
-  - npm run build:lib
-  - npm run copy-lib-assets
-  - cd dist/ngx-frogger
-
+- stable
+- '6'
+- '4'
 deploy:
-  skip_cleanup: true
   provider: npm
-  email: "zaid172009@gmail.com"
-  api_key: token
+  email: zaid172009@gmail.com
+  api_key:
+    secure: tYuaTRELrJ7yA60YmmKz49z0/rc17b/XzOCtOLt/6WQjXdXE5aGeMw/038F4cN81hcKXEdTfPMp90+LvWZZVEl+Ap3U22CXtGTGhy9VWAAJWJM2U3nhIdhWUj8CwzvMWGlZHkyyuzm11ADGdPuCvHrfmLLthPoxUuy9Zc5uGd/Wr8oSUfeHs2WEbYfkNt342VkQVVhl23KDKx4RvAS/d0kyF3ka1AiaAdZc7F/SjHScTnxunJsKZjQL4Fi2mitli57itPlVexgrlTZmc4ZZ8cmd83pkLnR5rO11EbtExzHRMMigpLxhM0rcW8WhGsrYhYxy58jpUPn6n7hqAAG7pKBuN9Jo1pKR6eYZZMmWLHi0QPs9NSUcbJCXVgHRkofgcDMs0ERqvrtxYV2+X7gMf8V6ayIBZRQAD9L+YaTbj+WrEdePBkFhVY+2rdvwdNHvE3lBPo5aNRQgq292/AfWd4jgFjh7yPqTsuc1sFsO/A/F8jkYKVpPrUDq/UgSMsn2kVjTs4WwAES5AQOLu9w215FkeAsByefN9dyedBOpn+ssxchBJFXpYiWim0Xp6p4hR42A70YW92IFYK816dq4NUFYmLpP0lbFdMT3A3VquCWTG47NZAmq9qWbZ1gwxsVMbaR0VK5qUL1czpqE3Oarag41q4+Tncfvr5Po1Uy6RI30=
+  on:
+    repo: zalhadad/ngx-frogger
