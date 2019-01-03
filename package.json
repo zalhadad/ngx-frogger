@@ -8,11 +8,10 @@
     "build:lib": "ng build ngx-frogger && npm run copy-lib-assets",
     "copy-lib-assets": "cpx \"src/assets/**\" \"dist/ngx-frogger/assets\" -v",
     "publish:lib": "npm publish dist/ngx-frogger ",
-    "test": "ng test",
+    "test": "echo 'no test'",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "~7.1.0",
     "@angular/common": "~7.1.0",
