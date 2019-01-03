@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import 'p5';
 import * as p5 from 'p5';
 import 'p5/lib/addons/p5.sound';
@@ -56,7 +56,9 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
   private currentFrame: number;
   private textPosition;
 
-  constructor() {
+  constructor(private cdRef: ChangeDetectorRef) {
+    this.cdRef.detach();
+
     this.gameOver = new EventEmitter<{
       totalTime: number,
       score: number,
