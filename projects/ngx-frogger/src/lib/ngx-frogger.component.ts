@@ -1,4 +1,11 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output
+} from '@angular/core';
 import 'p5';
 import * as p5 from 'p5';
 import 'p5/lib/addons/p5.sound';
@@ -56,9 +63,7 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
   private currentFrame: number;
   private textPosition;
 
-  constructor(private cdRef: ChangeDetectorRef) {
-    this.cdRef.detach();
-
+  constructor(private zone: NgZone) {
     this.gameOver = new EventEmitter<{
       totalTime: number,
       score: number,
@@ -224,14 +229,14 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
       };
 
     };
-
-    const resultat = new p5(sketch);
+    this.zone.runOutsideAngular(() => {
+      const resultat = new p5(sketch);
+    });
   }
 
   ngOnDestroy() {
     this.p5.remove();
   }
-
   reset() {
     this.gameStart = moment();
     this.level = 0;
