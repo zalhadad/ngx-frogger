@@ -10,19 +10,19 @@ export class Frog {
   right;
   up;
   down;
-  private img: any;
-  private imgFixed: any;
-  private p5: any;
-  private canvas: any;
-  private removed: boolean;
-  private keycodes;
+  img: any;
+  imgFixed: any;
+  p5: any;
+  canvas: any;
+  removed: boolean;
+  keycodes;
 
-  constructor(p5, x, y, taille, canvas) {
+  constructor(p5, x, y, taille, canvas, imgName = 'frog.gif') {
     this.p5 = p5;
     this.sittingOn = null;
     this.rect = new Rectangle(x, y, taille, taille);
-    this.imgFixed = this.p5.loadImage('assets/sprites/frog.gif');
-    this.img = this.p5.createImg('assets/sprites/frog.gif');
+    this.imgFixed = this.p5.loadImage('assets/sprites/' + imgName);
+    this.img = this.p5.createImg('assets/sprites/' + imgName);
     this.img.size(taille, taille);
     this.img.style('transition: transform 0.1s ease-in-out');
     this.img.style('z-index: 1000');

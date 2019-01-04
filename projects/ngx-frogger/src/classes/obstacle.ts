@@ -9,6 +9,7 @@ export class Obstacle {
   type;
   img;
   res;
+  bonus;
   private dir: number;
 
   constructor(p5, x, y, taille, res, speed, type) {
@@ -32,6 +33,10 @@ export class Obstacle {
 
     this.rect.move(this.speed / this.res, 0);
 
+    if (this.bonus) {
+      this.bonus.update();
+    }
+
   }
 
   show() {
@@ -43,6 +48,10 @@ export class Obstacle {
     this.p5.image(this.img, 0, 0, this.rect.w, this.rect.h);
     this.p5.imageMode(this.p5.CORNER);
     this.p5.pop();
+
+    if (this.bonus) {
+      this.bonus.show();
+    }
   }
 
   private getFilename(taille, type) {

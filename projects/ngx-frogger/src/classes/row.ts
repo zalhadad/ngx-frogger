@@ -16,9 +16,13 @@ export class Row {
     this.res = res;
     this.speed = speed;
     this.cols = cols;
-    this.inverted = this.p5.int(this.p5.random(1, 3)) === 2 ? -1 : 1;
-    this.obstacles = [];
     this.type = (y > this.cols / 2 ? 'car' : 'boat');
+    if (this.type === 'boat') {
+      this.inverted = y % 2 ? -1 : 1;
+    } else {
+      this.inverted = this.p5.int(this.p5.random(1, 3)) === 2 ? -1 : 1;
+    }
+    this.obstacles = [];
     const min = (this.type === 'boat' ? 3 : 2);
 
     let reste = this.cols;
@@ -29,7 +33,7 @@ export class Row {
     while (reste > 0) {
       size = this.p5.int(this.p5.random(min, 5));
       if (this.type === 'boat') {
-        offset = this.p5.int(this.p5.random(1, 6));
+        offset = this.p5.int(this.p5.random(5, this.cols / 2));
       } else {
         offset = this.p5.int(this.p5.random(5, this.cols / 2));
       }
