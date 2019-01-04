@@ -87,8 +87,8 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
 
       s.setup = () => {
         s.frameRate(60);
-
-        this.canvas = s.createCanvas(800, 800);
+        const size = s.windowHeight - 90;
+        this.canvas = s.createCanvas(size, size);
         this.canvas.parent('canvas-holder');
         this.cols = 15;
         this.textPosition = this.canvas.width / 5;
@@ -278,6 +278,11 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
       const old = this.frogs.pop();
       old.remove();
       this.frogs.push(this.currentFrog);
+      if (this.bonusFrog) {
+        this.bonusFrog.remove();
+      }
+      this.bonusFrog = undefined;
+      this.bonusSpawnTime = undefined;
     }
   }
 
