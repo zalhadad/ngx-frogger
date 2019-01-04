@@ -24,6 +24,7 @@ export class Frog {
     this.rect = new Rectangle(x, y, taille, taille);
     this.imgFixed = this.p5.loadImage('assets/sprites/' + imgName);
     this.img = this.p5.createImg('assets/sprites/' + imgName);
+    this.img.hide();
     this.img.size(taille, taille);
     this.img.style('transition: transform 0.1s ease-in-out');
     this.img.style('z-index: 1000');
