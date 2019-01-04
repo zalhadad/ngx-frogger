@@ -16,6 +16,7 @@ export class Frog {
   canvas: any;
   removed: boolean;
   keycodes;
+  bonus;
 
   constructor(p5, x, y, taille, canvas, imgName = 'frog.gif') {
     this.p5 = p5;
@@ -49,23 +50,20 @@ export class Frog {
     this.sittingOn = null;
 
     this.img.position(this.rect.x * this.rect.w + this.canvas.position().x, this.rect.y * this.rect.h + this.canvas.position().y);
+
+    if (this.bonus) {
+      this.bonus.angle = this.angle;
+      this.bonus.update();
+    }
   }
 
   move(x, y, arrivee: Arrivee) {
-    if (y) {
-      this.rect.y = Math.round(this.rect.y);
+    if (this.arrived) {
+      return false;
     }
 
-    if (this.rect.y === 2 && y === -1) {
-      const xInt = Math.round(this.rect.x);
-      if (arrivee.canEnter(xInt)) {
-        arrivee.enterArrivee(xInt);
-        this.rect.x = xInt;
-        this.rect.move(x, y);
-        this.arrived = true;
-      }
-    } else {
-      this.rect.move(x, y);
+    if (y) {
+      this.rect.y = Math.round(this.rect.y);
     }
 
     if (x === -1) {
@@ -83,6 +81,19 @@ export class Frog {
 
     this.img.style('rotate', this.angle);
 
+    if (this.rect.y === 2 && y === -1) {
+      const xInt = Math.round(this.rect.x);
+      if (arrivee.canEnter(xInt)) {
+        arrivee.enterArrivee(xInt);
+        this.rect.move(x, y);
+        this.rect.x = xInt;
+        this.arrived = true;
+        this.update();
+      }
+    } else {
+      this.rect.move(x, y);
+    }
+
   }
 
   show() {
@@ -98,6 +109,10 @@ export class Frog {
       this.p5.image(this.imgFixed, 0, 0, this.rect.w, this.rect.h);
       this.p5.imageMode(this.p5.CORNER);
       this.p5.pop();
+    }
+
+    if (this.bonus) {
+      this.bonus.show();
     }
   }
 

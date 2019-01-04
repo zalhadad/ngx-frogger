@@ -60,7 +60,11 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
 
   private bonusBoat: Obstacle;
   private bonusSpawnTime: number;
-  private bonusFrog: any;
+  private bonusFrog: BonusFrog;
+  private SCORE_FROG = 50;
+  private SCORE_LEVEL = 100;
+  private SCORE_STEP = 10;
+  private SCORE_BONUS = 3;
 
   constructor(private zone: NgZone) {
     this.gameOver = new EventEmitter<{
@@ -120,8 +124,11 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
         this.rows.forEach(r => r.update());
 
         if (this.currentFrog.arrived) {
-          this.score += (50 * this.level);
+          this.score += this.currentFrog.bonus ? this.SCORE_FROG * this.level * this.SCORE_BONUS : this.SCORE_FROG * this.level;
           this.yReached = this.cols - 1;
+          if (this.currentFrog.bonus) {
+            this.bonusFrog = undefined;
+          }
           this.currentFrog = new Frog(s, Math.floor(this.cols / 2), this.cols - 1, this.res, this.canvas);
           this.frogs.push(this.currentFrog);
         }
@@ -146,9 +153,13 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
 
         this.makeBonus();
 
+        if (this.bonusFrog && !this.bonusFrog.attachedToFrog && this.bonusFrog.intersects(this.currentFrog)) {
+          this.bonusFrog.attachToFrog(this.currentFrog);
+        }
+
         if (this.arrivee.goToNextLevel()) {
           this.times.push({level: this.level, time: this.timer});
-          this.score += (100 * this.level);
+          this.score += (this.SCORE_LEVEL * this.level);
           this.lifes.addLife();
           this.init();
         }
@@ -158,7 +169,7 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
 
         if (Math.round(this.currentFrog.rect.y) < this.yReached) {
           this.yReached = this.currentFrog.rect.y;
-          this.score += (10 * this.level);
+          this.score += (this.SCORE_STEP * this.level);
         }
 
         const gameTimeDisplay = 'Total : ' + (this.gameTimer.format().includes('milliseconds') ? '0:00' : this.gameTimer.format()) + ' min';
@@ -315,15 +326,16 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
 
     if (this.bonusFrog) {
       this.bonusFrog.remove();
-      this.bonusFrog = undefined;
-      this.bonusSpawnTime = undefined;
     }
+    this.bonusFrog = undefined;
+    this.bonusSpawnTime = undefined;
   }
 
   private makeBonus() {
     if (!this.bonusSpawnTime && !this.bonusFrog) {
-      this.bonusSpawnTime = 2000 || this.p5.int(this.p5.random(5, 16)) * 1000 + this.timer;
-    } else if (this.bonusSpawnTime - this.timer < 0) {
+      this.bonusSpawnTime = this.p5.int(this.p5.random(5, 16)) * 1000 + this.timer;
+    }
+    if (this.bonusSpawnTime && this.bonusSpawnTime - this.timer < 0) {
       this.bonusBoat = this.getRandomBoat();
       this.bonusFrog = new BonusFrog(this.p5, this.bonusBoat, this.res, this.canvas);
       this.bonusSpawnTime = undefined;

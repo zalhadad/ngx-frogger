@@ -12,7 +12,7 @@ export class BonusFrog extends Frog {
     super(p5, boat.rect.x, boat.rect.y, taille, canvas, 'bonusFrog.gif');
     this.offset = this.p5.int(this.p5.random(0, boat.taille));
     this.rect.x += this.offset;
-    this.lifeDuration = 3 || this.p5.int(this.p5.random(5, 16));
+    this.lifeDuration = this.p5.int(this.p5.random(10, 16));
     this.attachedToFrog = false;
     this.sittingOn = boat;
     this.dir = 1;
@@ -20,7 +20,7 @@ export class BonusFrog extends Frog {
     this.img.hide();
     this.img.style('rotate', this.angle);
     boat.bonus = this;
-    this.frameRate = 60 || this.p5.int(this.p5.frameRate())
+    this.frameRate = 60 || this.p5.int(this.p5.frameRate());
   }
 
   update() {
@@ -30,9 +30,10 @@ export class BonusFrog extends Frog {
 
     this.rect.y = Math.round(this.rect.y);
     if (this.sittingOn !== null) {
-      this.rect.x = this.offset + this.sittingOn.rect.x;
+      this.rect.x = (this.attachedToFrog ? 0 : this.offset) + this.sittingOn.rect.x;
+      this.rect.y = this.sittingOn.rect.y;
     }
-    if (this.p5.frameCount % this.frameRate === 0) {
+    if (!this.attachedToFrog && this.p5.frameCount % this.frameRate === 0) {
       this.move(this.dir, 0, null);
       this.offset += this.dir;
       this.lifeDuration -= 1;
@@ -60,14 +61,27 @@ export class BonusFrog extends Frog {
       this.p5.angleMode(this.p5.DEGREES);
       this.p5.rotate(this.angle);
       this.p5.imageMode(this.p5.CENTER);
-      this.p5.image(this.imgFixed, 0, 0, this.rect.w, this.rect.h);
+      this.p5.image(this.imgFixed, 0, 0, this.rect.w * 0.7, this.rect.h * 0.7);
       this.p5.imageMode(this.p5.CORNER);
       this.p5.pop();
     }
   }
 
-  remove(){
+  remove() {
     this.sittingOn.bonus = undefined;
     super.remove();
+  }
+
+  intersects(frog) {
+    const x1 = Math.floor(this.rect.x);
+    const x2 = Math.floor(frog.rect.x);
+    return this.rect.y === frog.rect.y && x1 === x2;
+  }
+
+  attachToFrog(frog) {
+    this.attachedToFrog = true;
+    this.sittingOn.bonus = undefined;
+    frog.bonus = this;
+    this.sittingOn = frog;
   }
 }
