@@ -187,6 +187,9 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
         if (this.currentFrog.rect.y < Math.floor(this.cols / 2) && !this.currentFrog.sittingOn) {
           this.nextLife();
         }
+        if (this.bonusFrog && this.bonusFrog.removed) {
+          this.bonusFrog = undefined;
+        }
       };
       s.keyPressed = () => {
         switch (s.keyCode) {
@@ -315,15 +318,14 @@ export class NgxFroggerComponent implements OnInit, OnDestroy {
       this.bonusFrog = undefined;
       this.bonusSpawnTime = undefined;
     }
-    this.makeBonus();
   }
 
   private makeBonus() {
     if (!this.bonusSpawnTime && !this.bonusFrog) {
-      this.bonusSpawnTime = this.p5.int(this.p5.random(5, 16)) * 1000 + this.timer;
+      this.bonusSpawnTime = 2000 || this.p5.int(this.p5.random(5, 16)) * 1000 + this.timer;
+    } else if (this.bonusSpawnTime - this.timer < 0) {
       this.bonusBoat = this.getRandomBoat();
       this.bonusFrog = new BonusFrog(this.p5, this.bonusBoat, this.res, this.canvas);
-    } else if (this.bonusSpawnTime - this.timer < 0) {
       this.bonusSpawnTime = undefined;
     }
   }

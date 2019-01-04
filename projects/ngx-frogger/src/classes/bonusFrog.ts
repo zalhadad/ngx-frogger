@@ -6,18 +6,21 @@ export class BonusFrog extends Frog {
   attachedToFrog;
   private offset: number;
   private dir: number;
+  private frameRate: number;
 
   constructor(p5, boat, taille, canvas) {
     super(p5, boat.rect.x, boat.rect.y, taille, canvas, 'bonusFrog.gif');
     this.offset = this.p5.int(this.p5.random(0, boat.taille));
     this.rect.x += this.offset;
-    this.lifeDuration = this.p5.int(this.p5.random(5, 16));
+    this.lifeDuration = 3 || this.p5.int(this.p5.random(5, 16));
     this.attachedToFrog = false;
     this.sittingOn = boat;
     this.dir = 1;
     this.angle = 90;
+    this.img.hide();
     this.img.style('rotate', this.angle);
     boat.bonus = this;
+    this.frameRate = 60 || this.p5.int(this.p5.frameRate())
   }
 
   update() {
@@ -29,10 +32,10 @@ export class BonusFrog extends Frog {
     if (this.sittingOn !== null) {
       this.rect.x = this.offset + this.sittingOn.rect.x;
     }
-    if (this.p5.frameCount % 60 === 0) {
+    if (this.p5.frameCount % this.frameRate === 0) {
       this.move(this.dir, 0, null);
       this.offset += this.dir;
-      console.log(this);
+      this.lifeDuration -= 1;
     }
 
     if (this.rect.x >= this.sittingOn.rect.x + this.sittingOn.taille - 1 && this.angle === 90) {
@@ -61,5 +64,10 @@ export class BonusFrog extends Frog {
       this.p5.imageMode(this.p5.CORNER);
       this.p5.pop();
     }
+  }
+
+  remove(){
+    this.sittingOn.bonus = undefined;
+    super.remove();
   }
 }

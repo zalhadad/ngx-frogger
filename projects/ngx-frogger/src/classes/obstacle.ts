@@ -50,6 +50,7 @@ export class Obstacle {
     this.p5.pop();
 
     if (this.bonus) {
+      console.log('bonus')
       this.bonus.show();
     }
   }
