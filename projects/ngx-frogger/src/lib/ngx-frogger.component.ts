@@ -1,8 +1,6 @@
 import {Component, EventEmitter, NgZone, OnDestroy, OnInit, Output} from '@angular/core';
 import 'p5';
 import * as p5 from 'p5';
-import 'p5/lib/addons/p5.sound';
-import 'p5/lib/addons/p5.dom';
 import {Arrivee} from '../classes/arrivee';
 import {SafeZone} from '../classes/safeZone';
 import {Frog} from '../classes/frog';
